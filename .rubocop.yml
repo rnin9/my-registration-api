@@ -1,0 +1,36 @@
+require:
+  - rubocop-rails
+  - rubocop-performance
+
+AllCops:
+  NewCops: enable
+  Exclude:
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'bin/**/*'
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
+
+# 한 줄 길이 (기본 80 -> 120으로)
+Layout/LineLength:
+  Max: 120
+
+# 메소드 길이
+Metrics/MethodLength:
+  Max: 20
+
+# 클래스 길이
+Metrics/ClassLength:
+  Max: 150
+
+# 문서화 주석 강제 안 함
+Style/Documentation:
+  Enabled: false
+
+# 문자열 리터럴 스타일
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+# frozen_string_literal 주석 안 붙여도 됨
+Style/FrozenStringLiteralComment:
+  Enabled: false
