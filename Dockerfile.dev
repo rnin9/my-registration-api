@@ -1,0 +1,24 @@
+# Dockerfile.dev
+FROM ruby:3.2.2-slim
+
+WORKDIR /rails
+
+# 빌드 도구 설치
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y \
+    build-essential \
+    git \
+    libpq-dev \
+    postgresql-client && \
+    rm -rf /var/lib/apt/lists/*
+
+# Gemfile 복사 및 설치
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+# 앱 코드 복사
+COPY . .
+
+EXPOSE 3000
+
+CMD ["rails", "server", "-b", "0.0.0.0"]
