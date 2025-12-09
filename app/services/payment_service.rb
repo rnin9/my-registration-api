@@ -52,7 +52,7 @@ class PaymentService
     end
 
     # 본인 결제만 수정 가능
-    unless payment.user_id == user_id
+    unless payment.actant_id == user_id
       return {
         success: false,
         errors: [ 'Not authorized' ],
@@ -82,7 +82,7 @@ class PaymentService
       }
     end
 
-    unless payment.user_id == user_id
+    unless payment.actant_id == user_id
       return {
         success: false,
         errors: [ 'Not authorized' ],
