@@ -124,5 +124,55 @@ RSpec.describe 'Courses API' do
       end
     end
   end
-  
+
+  path '/courses/{id}/apply' do
+    parameter name: :id, in: :path, type: :integer
+
+    post 'Apply for course (create payment)' do
+      tags 'Payments'
+      security [ Bearer: [] ]
+      consumes 'application/json'
+      description 'Create a payment for a course'
+      parameter name: :apply_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          amount: { type: :integer },
+          method: {
+            type: :string,
+            enum: [ 'card', 'bank_transfer', 'virtual_account', 'mobile', 'kakaopay', 'naverpay' ]
+          }
+        },
+        required: [ 'amount', 'method' ]
+      }
+
+      response '201', 'payment created' do
+        schema type: :object,
+               properties: {
+                 id: { type: :string, format: :uuid },
+                 user_id: { type: :string, format: :uuid },
+                 amount: { type: :integer },
+                 method: { type: :string },
+                 status: { type: :string },
+                 target_type: { type: :string },
+                 target_id: { type: :string },
+                 title: { type: :string },
+                 valid_from: { type: :string, format: :date },
+                 valid_to: { type: :string, format: :date },
+                 created_at: { type: :string, format: 'date-time' },
+                 updated_at: { type: :string, format: 'date-time' }
+               }
+
+        run_test!
+      end
+
+      response '404', 'course not found' do
+        run_test!
+      end
+
+      response '422', 'invalid' do
+        run_test!
+      end
+    end
+  end
+
 end
