@@ -20,4 +20,11 @@ Rails.application.routes.draw do
       post :restore
     end
   end
+
+  # Courses
+  resources :courses do
+    member do
+      post :restore
+    end
+  end
 end
