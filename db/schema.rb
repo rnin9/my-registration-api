@@ -10,9 +10,40 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_08_003354) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_09_055448) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "courses", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description", null: false
+    t.datetime "start_at", null: false
+    t.datetime "end_at", null: false
+    t.string "status", default: "AVAILABLE", null: false
+    t.integer "student_count", default: 0
+    t.boolean "is_destroyed", default: false, null: false
+    t.bigint "actant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actant_id"], name: "index_courses_on_actant_id"
+    t.index ["is_destroyed"], name: "index_courses_on_is_destroyed"
+    t.index ["start_at"], name: "index_courses_on_start_at"
+    t.index ["status"], name: "index_courses_on_status"
+  end
+
+  create_table "tests", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description", null: false
+    t.datetime "start_at", null: false
+    t.datetime "end_at", null: false
+    t.string "status", default: "AVAILABLE", null: false
+    t.integer "examinee_count", default: 0
+    t.boolean "is_destroyed", default: false, null: false
+    t.bigint "actant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actant_id"], name: "index_tests_on_actant_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email"
@@ -23,4 +54,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_08_003354) do
     t.boolean "is_destroyed"
   end
 
+  add_foreign_key "courses", "users", column: "actant_id"
+  add_foreign_key "tests", "users", column: "actant_id"
 end
