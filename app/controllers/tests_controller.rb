@@ -1,4 +1,3 @@
-# app/controllers/tests_controller.rb
 class TestsController < ApplicationController
   include Authenticate
 
