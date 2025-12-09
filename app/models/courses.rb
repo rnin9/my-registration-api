@@ -1,4 +1,3 @@
-# app/models/course.rb
 class Course < ApplicationRecord
   # Associations
   belongs_to :actant, class_name: 'User'
