@@ -1,6 +1,5 @@
-# app/services/test_service.rb
 class TestService
-  # GET /tests - 목록 조회
+  # GET /tests
   def self.find_tests(query_opts:, skip:, limit:)
     tests = Test.active
     tests = tests.by_status(query_opts[:status])
@@ -8,9 +7,9 @@ class TestService
     tests.paginate(skip: skip, limit: limit)
   end
 
-  # POST /tests - 생성
+  # POST /tests
   def self.create_test(test_create:, actant_id:)
-    # 비즈니스 로직: Title 중복 체크
+    # Title 중복 체크
     if Test.active.exists?(title: test_create[:title])
       return {
         success: false,
@@ -19,7 +18,7 @@ class TestService
       }
     end
 
-    # 비즈니스 로직: startAt >= endAt 체크
+    # startAt >= endAt 체크
     if test_create[:start_at] >= test_create[:end_at]
       return {
         success: false,
@@ -47,10 +46,9 @@ class TestService
 
   # PATCH /tests/:id - 수정
   def self.update_test(test_id:, test_update:, actant_id:)
-    # Scope로 조회
     test = Test.active.find_by(id: test_id)
 
-    # 비즈니스 로직: 존재 여부
+    # 존재 여부 체크
     unless test
       return {
         success: false,
@@ -59,7 +57,7 @@ class TestService
       }
     end
 
-    # 비즈니스 로직: 권한 체크
+    # 권한 체크
     unless test.actant_id == actant_id
       return {
         success: false,
@@ -68,7 +66,7 @@ class TestService
       }
     end
 
-    # 비즈니스 로직: startAt >= endAt 체크
+    # startAt >= endAt 체크
     if test_update[:start_at].present? && test_update[:end_at].present?
       if test_update[:start_at] >= test_update[:end_at]
         return {
@@ -112,7 +110,6 @@ class TestService
 
   # POST /tests/:id/restore - 복원
   def self.restore(test_id, actant_id)
-    # Scope로 조회
     test = Test.destroyed.by_actant(actant_id).find_by(id: test_id)
 
     unless test
@@ -132,7 +129,6 @@ class TestService
 
   private
 
-  # 정렬 적용 (Scope 활용)
   def self.apply_sort(tests, sort)
     case sort
     when 'popular'
