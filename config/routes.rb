@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   resources :tests do
     member do
       post :restore
+      post :apply
     end
   end
 
@@ -27,6 +28,7 @@ Rails.application.routes.draw do
   resources :courses do
     member do
       post :restore
+      post :apply
     end
   end
 end
