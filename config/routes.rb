@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
-  # Auth routes
+  mount Rswag::Ui::Engine => '/api-docs'
+  mount Rswag::Api::Engine => '/api-docs'
 
+  # Auth routes
   namespace :auth do
     post 'sign-in', to: 'sessions#sign_in'
     delete 'sign-out', to: 'sessions#sign_out'
