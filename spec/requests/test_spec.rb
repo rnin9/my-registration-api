@@ -129,7 +129,7 @@ RSpec.describe 'Tests API' do
     parameter name: :id, in: :path, type: :integer
 
     post 'Apply for test (create payment)' do
-      tags 'Payments'
+      tags 'Tests'
       security [ Bearer: [] ]
       consumes 'application/json'
       description 'Create a payment for a test'

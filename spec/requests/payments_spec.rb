@@ -29,7 +29,7 @@ RSpec.describe 'Payments API' do
           payment: {
             type: :object,
             properties: {
-              user_id: { type: :string, format: :uuid },
+              actant_id: { type: :string, format: :uuid },
               amount: { type: :integer },
               method: {
                 type: :string,
@@ -50,7 +50,7 @@ RSpec.describe 'Payments API' do
               valid_from: { type: :string, format: :date },
               valid_to: { type: :string, format: :date }
             },
-            required: [ 'user_id', 'amount', 'status', 'target_type', 'target_id', 'title', 'valid_from', 'valid_to' ]
+            required: [ 'actant_id', 'amount', 'status', 'target_type', 'target_id', 'title', 'valid_from', 'valid_to' ]
           }
         }
       }
