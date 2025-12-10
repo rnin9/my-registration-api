@@ -103,8 +103,8 @@ class PaymentsController < ApplicationController
   # POST /courses/:id/apply
   def apply
     # polymorphic: test_id 또는 course_id
-    target_type = params[:test_id] ? 'test' : 'course'
-    target_id = params[:test_id] || params[:course_id]
+    target_type = controller_name.singularize
+    target_id = params[:id]
 
     result = PaymentService.apply(
       target_type: target_type,
@@ -157,7 +157,7 @@ class PaymentsController < ApplicationController
 
   def payment_params
     params.require(:payment).permit(
-      :user_id,
+      :actant_id,
       :amount,
       :method,
       :status,

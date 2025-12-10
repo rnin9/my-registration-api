@@ -28,6 +28,6 @@ module Payable
   private
 
   def apply_params
-    params.permit(:amount, :method)
+    params.slice(:amount, :method).permit!
   end
 end
