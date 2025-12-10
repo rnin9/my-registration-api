@@ -31,4 +31,12 @@ Rails.application.routes.draw do
       post :apply
     end
   end
+
+  # Payments
+  resources :payments do
+    member do
+      post :restore
+      post :cancel
+    end
+  end
 end

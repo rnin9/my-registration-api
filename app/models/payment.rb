@@ -2,7 +2,7 @@ class Payment < ApplicationRecord
   include SoftDeletable
 
   # Associations
-  belongs_to :user
+  belongs_to :user, foreign_key: :actant_id
 
   # Enums
   enum method: {
@@ -28,7 +28,7 @@ class Payment < ApplicationRecord
   }, _prefix: true
 
   # Validations
-  validates :user_id, presence: true
+  validates :actant_id, presence: true
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :status, presence: true
   validates :target_type, presence: true
@@ -37,7 +37,7 @@ class Payment < ApplicationRecord
   validates :valid_from, presence: true
   validates :valid_to, presence: true
 
-  scope :by_user, ->(user_id) { where(user_id: user_id) if user_id.present? }
+  scope :by_user, ->(user_id) { where(actant_id: user_id) if actant_id.present? }
   scope :by_status, ->(status) { where(status: status) if status.present? }
   scope :by_target_type, ->(target_type) { where(target_type: target_type) if target_type.present? }
   scope :by_target, ->(target_type, target_id) {

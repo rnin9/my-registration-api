@@ -6,7 +6,7 @@ class PaymentSerializer
   def as_json(*)
     {
       id: @payment.id,
-      user_id: @payment.user_id,
+      actant_id: @payment.actant_id,
       amount: @payment.amount,
       method: @payment.method,
       status: @payment.status,

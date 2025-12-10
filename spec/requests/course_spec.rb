@@ -129,7 +129,7 @@ RSpec.describe 'Courses API' do
     parameter name: :id, in: :path, type: :integer
 
     post 'Apply for course (create payment)' do
-      tags 'Payments'
+      tags 'Courses'
       security [ Bearer: [] ]
       consumes 'application/json'
       description 'Create a payment for a course'
