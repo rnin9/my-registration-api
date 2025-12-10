@@ -20,7 +20,7 @@ class PaymentService
   # POST /payments
   def self.create(payment_params:)
     payment = Payment.new(
-      user_id: payment_params[:user_id],
+      actant_id: payment_params[:user_id],
       amount: payment_params[:amount],
       method: payment_params[:method],
       status: payment_params[:status],
@@ -135,7 +135,7 @@ class PaymentService
         status: 404
       }
     end
-
+    
     payment = Payment.new(
       actant_id: user_id,
       amount: payment_params[:amount],
