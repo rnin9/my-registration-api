@@ -1,0 +1,264 @@
+<!-- app/views/payment_reminder_mailer/pending_payment_reminder.html.erb -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+      body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+          line-height: 1.6;
+          color: #333;
+          background-color: #f5f5f5;
+          margin: 0;
+          padding: 0;
+      }
+
+      .container {
+          max-width: 600px;
+          margin: 20px auto;
+          background-color: #fff;
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .header {
+          background: <%= @target_type == 'test' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' %>;
+          color: white;
+          padding: 30px 20px;
+          text-align: center;
+      }
+
+      .header h1 {
+          margin: 0;
+          font-size: 24px;
+          font-weight: 600;
+      }
+
+      .header .badge {
+          display: inline-block;
+          background-color: rgba(255, 255, 255, 0.2);
+          padding: 8px 16px;
+          border-radius: 20px;
+          margin-top: 10px;
+          font-size: 14px;
+          font-weight: 500;
+      }
+
+      .content {
+          padding: 30px 20px;
+      }
+
+      .greeting {
+          font-size: 16px;
+          margin-bottom: 20px;
+      }
+
+      .alert-box {
+          background-color: #fff3cd;
+          border-left: 4px solid #ffc107;
+          padding: 15px;
+          margin: 20px 0;
+          border-radius: 4px;
+      }
+
+      .alert-box strong {
+          color: #856404;
+      }
+
+      .info-section {
+          background-color: #f8f9fa;
+          padding: 20px;
+          margin: 20px 0;
+          border-radius: 4px;
+          border: 1px solid #dee2e6;
+      }
+
+      .info-section h3 {
+          margin-top: 0;
+          margin-bottom: 15px;
+          font-size: 18px;
+          color: #495057;
+          font-weight: 600;
+      }
+
+      .info-item {
+          margin: 10px 0;
+          display: flex;
+          justify-content: space-between;
+          padding: 8px 0;
+          border-bottom: 1px solid #e9ecef;
+      }
+
+      .info-item:last-child {
+          border-bottom: none;
+      }
+
+      .info-label {
+          font-weight: 600;
+          color: #6c757d;
+      }
+
+      .info-value {
+          color: #212529;
+          text-align: right;
+      }
+
+      .status-pending {
+          display: inline-block;
+          background-color: #fff3cd;
+          color: #856404;
+          padding: 4px 12px;
+          border-radius: 12px;
+          font-size: 14px;
+          font-weight: 600;
+      }
+
+      .button {
+          display: inline-block;
+          padding: 14px 32px;
+          background: <%= @target_type == 'test' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' %>;
+          color: white !important;
+          text-decoration: none;
+          border-radius: 6px;
+          font-weight: 600;
+          font-size: 16px;
+          margin: 20px 0;
+          text-align: center;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          transition: transform 0.2s;
+      }
+
+      .button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .button-container {
+          text-align: center;
+          margin: 30px 0;
+      }
+
+      .footer {
+          background-color: #f8f9fa;
+          padding: 20px;
+          text-align: center;
+          font-size: 12px;
+          color: #6c757d;
+          border-top: 1px solid #dee2e6;
+      }
+
+      .footer a {
+          color: #667eea;
+          text-decoration: none;
+      }
+
+      .highlight {
+          background-color: #fff3cd;
+          padding: 2px 6px;
+          border-radius: 3px;
+          font-weight: 600;
+      }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>결제 확인이 필요합니다</h1>
+    <div class="badge"><%= @target_type == 'test' ? '시험' : '강의' %></div>
+  </div>
+
+  <div class="content">
+    <div class="greeting">
+      안녕하세요, <strong><%= @user.name %></strong>님!
+    </div>
+
+    <div class="alert-box">
+      신청하신 <strong><%= @target_name_ko %></strong>가
+      <strong style="font-size: 18px; color: #dc3545;"><%= @days_until_start %>일 후</strong>에 시작되는데,
+      아직 <strong>결제가 완료되지 않았습니다</strong>.
+    </div>
+
+    <div class="info-section">
+      <h3><%= @target_type == 'test' ? '시험 정보' : '강의 정보' %></h3>
+      <div class="info-item">
+        <span class="info-label"><%= @target_type == 'test' ? '시험명' : '강의명' %>:</span>
+        <span class="info-value"><strong><%= @target.title %></strong></span>
+      </div>
+      <% if @target.description.present? %>
+        <div class="info-item">
+          <span class="info-label">설명:</span>
+          <span class="info-value"><%= truncate(@target.description, length: 50) %></span>
+        </div>
+      <% end %>
+      <div class="info-item">
+        <span class="info-label">시작일시:</span>
+        <span class="info-value"><%= @target.start_at.strftime('%Y년 %m월 %d일 (%a) %H:%M') %></span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">종료일시:</span>
+        <span class="info-value"><%= @target.end_at.strftime('%Y년 %m월 %d일 (%a) %H:%M') %></span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">소요시간:</span>
+        <span class="info-value">
+          <%= distance_of_time_in_words(@target.start_at, @target.end_at) %>
+        </span>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h3>결제 정보</h3>
+      <div class="info-item">
+        <span class="info-label">결제 금액:</span>
+        <span class="info-value">
+            <strong style="font-size: 18px; color: #28a745;">
+              <%= number_to_currency(@payment.amount, unit: '', precision: 0, delimiter: ',') %>원
+            </strong>
+          </span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">결제 방법:</span>
+        <span class="info-value"><%= @payment.method&.upcase || '미선택' %></span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">결제 상태:</span>
+        <span class="info-value"><span class="status-pending">미완료 (PENDING)</span></span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">신청일:</span>
+        <span class="info-value"><%= @payment.created_at.strftime('%Y년 %m월 %d일 %H:%M') %></span>
+      </div>
+    </div>
+
+    <p style="line-height: 1.8; color: #495057; background-color: #f8f9fa; padding: 15px; border-radius: 4px;">
+      <strong style="color: #dc3545;"><%= @target_name_ko %> 시작 전까지</strong> 결제를 완료하지 않으시면
+      <span class="highlight"><%= @target_action_ko %>이 불가능</span>할 수 있습니다.<br><br>
+      지금 바로 결제를 완료하시고 <%= @target_name_ko %>에 참여하세요!
+    </p>
+
+    <div class="button-container">
+      <a href="<%= payment_url(@payment) %>" class="button">
+        결제 완료하기
+      </a>
+    </div>
+
+    <p style="font-size: 13px; color: #6c757d; text-align: center; margin-top: 20px;">
+      결제 ID: <%= @payment.id %><br>
+      <%= @target_type == 'test' ? '시험' : '강의' %> ID: <%= @target.id %>
+    </p>
+  </div>
+
+  <div class="footer">
+    <p>
+      문의사항이 있으시면 <a href="mailto:support@example.com">support@example.com</a>으로 연락주세요.<br>
+      본 메일은 발신 전용이므로 회신하실 수 없습니다.
+    </p>
+    <p style="margin-top: 10px; font-size: 11px;">
+      &copy; 2025 My Registration API. All rights reserved.
+    </p>
+  </div>
+</div>
+</body>
+</html>
