@@ -1,7 +1,7 @@
 class CoursesController < ApplicationController
-  include Authenticate
+  include Authenticable
   include Payable
-  
+
   # 인증 불필요한 액션
   skip_before_action :authenticate_user!, only: [ :index, :show ]
   before_action :set_course, only: [ :show, :update, :destroy ]
