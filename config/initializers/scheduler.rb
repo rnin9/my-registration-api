@@ -6,23 +6,21 @@ return unless defined?(Rails::Server)
 
 scheduler = Rufus::Scheduler.new
 
-scheduler.cron '0 0 * * *' do
-  Rails.logger.info "=" * 80
-  Rails.logger.info "[Scheduler] Starting payment reminder check..."
-  Rails.logger.info "[Scheduler] Current time: #{Time.current}"
-
+# 기본: 한국 시간 오전 9시
+scheduler.cron '0 9 * * * Asia/Seoul' do
+  Rails.logger.info "[Scheduler] Running daily payment reminder check (KST 09:00)"
   PaymentReminderService.check_and_send_reminders
-
-  Rails.logger.info "[Scheduler] Payment reminder check completed"
-  Rails.logger.info "=" * 80
 end
 
-# 개발/테스트용: 2분마다 실행 (프로덕션에서는 제거)
+# 개발 환경: 2분마다
 if Rails.env.development?
   scheduler.every '2m' do
-    Rails.logger.info "[Dev Scheduler] Running payment reminder check..."
+    Rails.logger.info "[Dev Scheduler] Running payment reminder check"
     PaymentReminderService.check_and_send_reminders
   end
 end
 
-Rails.logger.info "✅ [Scheduler] Rufus-Scheduler started successfully"
+Rails.logger.info "[Scheduler] Rufus-Scheduler started successfully"
+Rails.logger.info "[Scheduler] Daily reminder: 09:00 KST (Asia/Seoul)"
+
+Rails.logger.info "[Scheduler] Rufus-Scheduler started successfully"
