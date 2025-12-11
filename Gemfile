@@ -47,6 +47,7 @@ group :development do
   gem 'rubocop-performance', require: false
   gem 'rswag-api'
   gem 'rswag-ui'
+  gem 'letter_opener_web'
 end
 
 gem 'bcrypt', '~> 3.1'

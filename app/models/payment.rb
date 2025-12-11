@@ -2,7 +2,7 @@ class Payment < ApplicationRecord
   include SoftDeletable
 
   # Associations
-  belongs_to :user, foreign_key: :actant_id
+  belongs_to :actant, class_name: 'User', foreign_key: :actant_id
 
   # Enums
   enum method: {
