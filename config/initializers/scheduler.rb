@@ -6,7 +6,7 @@ return unless defined?(Rails::Server)
 
 scheduler = Rufus::Scheduler.new
 
-scheduler.cron '0 9 * * *' do
+scheduler.cron '0 0 * * *' do
   Rails.logger.info "=" * 80
   Rails.logger.info "[Scheduler] Starting payment reminder check..."
   Rails.logger.info "[Scheduler] Current time: #{Time.current}"
