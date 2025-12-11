@@ -33,10 +33,11 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
-
-  config.action_mailer.perform_caching = false
+  # Mailer Configuration
+  config.action_mailer.delivery_method = :letter_opener_web
+  config.action_mailer.default_url_options = { host: 'localhost:3000' }
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
@@ -55,7 +56,6 @@ Rails.application.configure do
 
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true
-
 
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true

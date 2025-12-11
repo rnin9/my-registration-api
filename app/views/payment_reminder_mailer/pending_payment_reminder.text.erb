@@ -1,0 +1,41 @@
+<!-- app/views/payment_reminder_mailer/pending_payment_reminder.text.erb -->
+[<%= @target_name_ko.upcase %>] 결제 확인 필요
+================================================================================
+
+안녕하세요, <%= @user.name %>님!
+
+신청하신 <%= @target_name_ko %>가 <%= @days_until_start %>일 후에 시작되는데,
+아직 결제가 완료되지 않았습니다.
+
+────────────────────────────────────────────────────────────────────────────────
+<%= @target_type == 'test' ? '시험' : '강의' %> 정보
+────────────────────────────────────────────────────────────────────────────────
+<%= @target_type == 'test' ? '시험명' : '강의명' %>: <%= @target.title %>
+<% if @target.description.present? -%>
+  설명: <%= @target.description %>
+<% end -%>
+시작일시: <%= @target.start_at.strftime('%Y년 %m월 %d일 (%a) %H:%M') %>
+종료일시: <%= @target.end_at.strftime('%Y년 %m월 %d일 (%a) %H:%M') %>
+소요시간: <%= distance_of_time_in_words(@target.start_at, @target.end_at) %>
+
+────────────────────────────────────────────────────────────────────────────────
+결제 정보
+────────────────────────────────────────────────────────────────────────────────
+결제 금액: <%= number_to_currency(@payment.amount, unit: '', precision: 0, delimiter: ',') %>원
+결제 방법: <%= @payment.method&.upcase || '미선택' %>
+결제 상태: 미완료 (PENDING)
+신청일: <%= @payment.created_at.strftime('%Y년 %m월 %d일 %H:%M') %>
+
+[중요] <%= @target_name_ko %> 시작 전까지 결제를 완료하지 않으시면
+<%= @target_action_ko %>이 불가능할 수 있습니다.
+
+지금 바로 아래 링크에서 결제를 완료해주세요:
+<%= payment_url(@payment) %>
+
+────────────────────────────────────────────────────────────────────────────────
+결제 ID: <%= @payment.id %>
+<%= @target_type == 'test' ? '시험' : '강의' %> ID: <%= @target.id %>
+
+문의사항: support@example.com
+본 메일은 발신 전용이므로 회신하실 수 없습니다.
+(c) 2025 My Registration API. All rights reserved.
