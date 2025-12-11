@@ -20,6 +20,14 @@ if Rails.env.development?
   end
 end
 
+# Polling Jobs (상태 감시)
+
+# 1분마다: Test 상태 자동 변경
+scheduler.every '1m' do
+  Rails.logger.info "[Polling] Checking test statuses (every 1 minute)"
+  TestStatusPollingService.update_test_statuses
+end
+
 Rails.logger.info "[Scheduler] Rufus-Scheduler started successfully"
 Rails.logger.info "[Scheduler] Daily reminder: 09:00 KST (Asia/Seoul)"
 

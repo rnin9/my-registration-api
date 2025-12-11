@@ -28,14 +28,14 @@ class PaymentReminderService
     Rails.logger.info "\n" + "-" * 80
     Rails.logger.info "[Reminder] Checking #{target_name}s starting in #{DAYS_BEFORE} days"
 
-    target_date = DAYS_BEFORE.days.from_now
+    now = Time.current
+    target_end_date = DAYS_BEFORE.days.from_now
 
-    # 1. 5일 후 시작하는 Target 찾기
+    # 지금 ~ 5일 후까지 (5일 이하 전부)
     targets = model.active
                    .where(status: 'AVAILABLE')
-                   .where(
-                     start_at: target_date.beginning_of_day..target_date.end_of_day
-                   )
+                   .where('start_at > ?', now)
+                   .where('start_at <= ?', target_end_date.end_of_day) # 5일 이내
 
     Rails.logger.info "[Reminder] Found #{targets.count} #{target_name.downcase}(s) starting on #{target_date.to_date}"
 

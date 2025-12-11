@@ -1,5 +1,5 @@
 class TestsController < ApplicationController
-  include Authenticate
+  include Authenticable
   include Payable
   # 인증 불필요한 액션
   skip_before_action :authenticate_user!, only: [ :index, :show ]

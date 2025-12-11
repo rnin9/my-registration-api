@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  include Authenticate
+  include Authenticable
 
   skip_before_action :authenticate_user!, only: [ :index, :show, :create ]
   before_action :set_user, only: [ :show, :update, :destroy ]

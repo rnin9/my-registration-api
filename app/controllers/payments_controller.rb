@@ -1,5 +1,5 @@
 class PaymentsController < ApplicationController
-  include Authenticate
+  include Authenticable
 
   before_action :set_payment, only: [ :show, :update, :destroy, :cancel, :complete ]
 
