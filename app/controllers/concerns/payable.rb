@@ -8,11 +8,10 @@ module Payable
   # POST /tests/:id/apply
   # POST /courses/:id/apply
   def apply
-    target_type = controller_name.singularize # 'tests' → 'test', 'courses' → 'course'
+    target = controller_name.classify.constantize.active.find(params[:id])
 
     result = PaymentService.apply(
-      target_type: target_type,
-      target_id: params[:id],
+      target,
       payment_params: apply_params,
       user_id: current_user.id
     )
@@ -23,11 +22,13 @@ module Payable
       status_code = result[:status] || :unprocessable_entity
       render json: { errors: result[:errors] }, status: status_code
     end
+  rescue ActiveRecord::RecordNotFound
+    render json: { errors: [ "Not found" ] }, status: :not_found # 여기서 404!
   end
+end
 
-  private
+private
 
-  def apply_params
-    params.slice(:amount, :method).permit!
-  end
+def apply_params
+  params.slice(:amount, :method).permit!
 end

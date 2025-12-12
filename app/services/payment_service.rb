@@ -124,25 +124,13 @@ class PaymentService
     end
   end
 
-  def self.apply(target_type:, target_id:, payment_params:, user_id:)
-    # Target 조회 (Test 또는 Course)
-    target = find_target(target_type, target_id)
-
-    unless target
-      return {
-        success: false,
-        errors: [ "#{target_type.capitalize} not found" ],
-        status: 404
-      }
-    end
-    
+  def self.apply(target:, payment_params:, user_id:)
     payment = Payment.new(
       actant_id: user_id,
       amount: payment_params[:amount],
       method: payment_params[:method],
       status: :pending,
-      target_type: target_type.upcase,
-      target_id: target_id,
+      target: target,
       title: "#{target_type.capitalize}: #{target.title}",
       valid_from: target.start_at.to_date,
       valid_to: target.end_at.to_date
