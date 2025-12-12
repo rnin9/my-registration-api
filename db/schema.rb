@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_09_063748) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_12_002325) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -36,7 +36,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_09_063748) do
     t.string "method"
     t.string "status", null: false
     t.string "target_type", null: false
-    t.string "target_id", null: false
+    t.bigint "target_id", null: false
     t.string "title", null: false
     t.datetime "paid_at"
     t.datetime "cancelled_at"

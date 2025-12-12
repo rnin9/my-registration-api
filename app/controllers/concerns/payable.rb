@@ -11,7 +11,7 @@ module Payable
     target = controller_name.classify.constantize.active.find(params[:id])
 
     result = PaymentService.apply(
-      target,
+      target: target,
       payment_params: apply_params,
       user_id: current_user.id
     )
