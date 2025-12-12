@@ -23,7 +23,7 @@ module Payable
       render json: { errors: result[:errors] }, status: status_code
     end
   rescue ActiveRecord::RecordNotFound
-    render json: { errors: [ "Not found" ] }, status: :not_found # 여기서 404!
+    render json: { errors: [ "Not found" ] }, status: :not_found
   end
 end
 
