@@ -3,6 +3,7 @@ class Payment < ApplicationRecord
 
   # Associations
   belongs_to :actant, class_name: 'User', foreign_key: :actant_id
+  belongs_to :target, polymorphic: true, foreign_key: :target_id
 
   # Enums
   enum method: {
@@ -22,17 +23,10 @@ class Payment < ApplicationRecord
     refunded: 'REFUNDED'
   }, _prefix: true
 
-  enum target_type: {
-    test: 'TEST',
-    course: 'COURSE'
-  }, _prefix: true
-
   # Validations
   validates :actant_id, presence: true
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :status, presence: true
-  validates :target_type, presence: true
-  validates :target_id, presence: true
   validates :title, presence: true
   validates :valid_from, presence: true
   validates :valid_to, presence: true

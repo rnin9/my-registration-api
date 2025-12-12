@@ -1,4 +1,3 @@
-# app/services/payment_reminder_service.rb
 class PaymentReminderService
   DAYS_BEFORE = 5
 
@@ -9,8 +8,8 @@ class PaymentReminderService
     Rails.logger.info "[Reminder Service] Target date: #{DAYS_BEFORE.days.from_now.to_date}"
 
     # Test + Course 통합 처리
-    test_count = process_targets(target_type: 'test', model: Test)
-    course_count = process_targets(target_type: 'course', model: Course)
+    test_count = process_targets(model: Test)
+    course_count = process_targets(model: Course)
 
     total = test_count + course_count
     Rails.logger.info "[Reminder Service] SUMMARY: #{test_count} test reminders + #{course_count} course reminders = #{total} total"
@@ -22,8 +21,8 @@ class PaymentReminderService
   private
 
   # Target(Test/Course) 처리
-  def self.process_targets(target_type:, model:)
-    target_name = target_type.capitalize
+  def self.process_targets(model:)
+    target_name = model.name
 
     Rails.logger.info "\n" + "-" * 80
     Rails.logger.info "[Reminder] Checking #{target_name}s starting in #{DAYS_BEFORE} days"
@@ -35,9 +34,9 @@ class PaymentReminderService
     targets = model.active
                    .where(status: 'AVAILABLE')
                    .where('start_at > ?', now)
-                   .where('start_at <= ?', target_end_date.end_of_day) # 5일 이내
+                   .where('start_at <= ?', target_end_date.end_of_day)
 
-    Rails.logger.info "[Reminder] Found #{targets.count} #{target_name.downcase}(s) starting on #{target_date.to_date}"
+    Rails.logger.info "[Reminder] Found #{targets.count} #{target_name.downcase}(s)"
 
     return 0 if targets.empty?
 
@@ -48,9 +47,9 @@ class PaymentReminderService
     # 3. 한 번에 모든 Pending Payment 조회
     pending_payments = Payment.active
                               .where(status: 'PENDING')
-                              .where(target_type: target_type.upcase)
+                              .where(target_type: model.name)
                               .where(target_id: target_ids)
-                              .includes(:actant) # N+1 방지
+                              .includes(:actant, :target)
 
     Rails.logger.info "[Reminder] Found #{pending_payments.count} pending payment(s)"
 
@@ -70,9 +69,9 @@ class PaymentReminderService
     reminder_count = 0
 
     pending_payments.each do |payment|
-      target = targets.find { |t| t.id.to_s == payment.target_id }
+      target = payment.target # Polymorphic으로 자동 조회!
 
-      if send_reminder(payment: payment, target: target, target_type: target_type)
+      if send_reminder(payment: payment, target: target)
         reminder_count += 1
       end
     end
@@ -84,27 +83,27 @@ class PaymentReminderService
   end
 
   # 메일 발송
-  def self.send_reminder(payment:, target:, target_type:)
-    user = payment.actant # includes로 이미 로드됨
+  def self.send_reminder(payment:, target:)
+    user = payment.actant
+    target_name = target.class.name # 'Test' 또는 'Course'
 
-    Rails.logger.info "[Reminder]     Sending reminder to #{user.email} (User ##{user.id})"
-    Rails.logger.info "[Reminder]       Payment: ##{payment.id} | Amount: #{number_with_delimiter(payment.amount)}원"
-    Rails.logger.info "[Reminder]       #{target_type.capitalize}: '#{target.title}'"
+    Rails.logger.info "[Reminder] Sending reminder to #{user.email} (User ##{user.id})"
+    Rails.logger.info "[Reminder] Payment: ##{payment.id} | Amount: #{number_with_delimiter(payment.amount)}원"
+    Rails.logger.info "[Reminder] #{target_name}: '#{target.title}'"
 
     # 메일 발송
     PaymentReminderMailer.pending_payment_reminder(
       user: user,
       payment: payment,
-      target: target,
-      target_type: target_type
+      target: target
     ).deliver_later
 
-    Rails.logger.info "[Reminder]       Status: Email queued successfully"
+    Rails.logger.info "[Reminder] Status: Email queued successfully"
     true
   rescue => e
-    Rails.logger.error "[Reminder]       ERROR: Failed to send reminder"
-    Rails.logger.error "[Reminder]       #{e.class}: #{e.message}"
-    Rails.logger.error "[Reminder]       Backtrace: #{e.backtrace.first(3).join(' | ')}"
+    Rails.logger.error "[Reminder] ERROR: Failed to send reminder"
+    Rails.logger.error "[Reminder] #{e.class}: #{e.message}"
+    Rails.logger.error "[Reminder] Backtrace: #{e.backtrace.first(3).join(' | ')}"
     false
   end
 

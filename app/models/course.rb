@@ -3,6 +3,7 @@ class Course < ApplicationRecord
 
   # Associations
   belongs_to :actant, class_name: 'User'
+  has_many :payments, as: :target
 
   # Enums
   enum status: {
